@@ -10,7 +10,9 @@ class DockerRuntimeLoader : RuntimeLoader {
 
     override fun runnable(): Boolean {
         return try {
-            return Files.exists(Paths.get("/.dockerenv")) || Files.exists(Paths.get("/run/.containerenv"))
+            val inContainer = Files.exists(Paths.get("/.dockerenv")) || Files.exists(Paths.get("/run/.containerenv"))
+            val socketExists = Files.exists(Paths.get("/var/run/docker.sock"))
+            inContainer && socketExists
         } catch (e: Exception) {
             i18n.debug("agent.runtime.docker.connection.failed", e.javaClass.simpleName, e.message)
             false

@@ -1,6 +1,7 @@
 package de.snenjih.velocloud.agent.runtime
 
 import de.snenjih.velocloud.agent.Agent
+import de.snenjih.velocloud.agent.i18n
 import de.snenjih.velocloud.agent.runtime.abstracts.AbstractServiceStatsThread
 import de.snenjih.velocloud.agent.runtime.docker.DockerRuntimeLoader
 import de.snenjih.velocloud.agent.runtime.k8s.KubernetesRuntimeLoader
@@ -22,12 +23,25 @@ abstract class Runtime {
          * @return the most suitable [Runtime] implementation for the current environment.
          */
         fun create(): Runtime {
-            val runtime = listOf(
+            val override = System.getenv("VELOCLOUD_RUNTIME")?.lowercase()
+            if (override != null && override != "auto") {
+                val loader = when (override) {
+                    "local"      -> LocalRuntimeLoader()
+                    "docker"     -> DockerRuntimeLoader()
+                    "kubernetes" -> KubernetesRuntimeLoader()
+                    else         -> null
+                }
+                if (loader != null) {
+                    i18n.info("agent.runtime.override", override)
+                    return loader.instance()
+                }
+            }
+
+            return listOf(
                 KubernetesRuntimeLoader(),
                 DockerRuntimeLoader(),
-                LocalRuntimeLoader() // Fallback if others are not runnable
-            ).firstOrNull { it.runnable() } ?: LocalRuntimeLoader()
-            return runtime.instance()
+                LocalRuntimeLoader()
+            ).firstOrNull { it.runnable() }?.instance() ?: LocalRuntimeLoader().instance()
         }
     }
 
