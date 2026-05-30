@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **VeloCloud v3** is a modular Minecraft cloud system for orchestrating server instances (Paper, Velocity, etc.) across Local, Docker, and Kubernetes runtimes. It is an early-stage prototype, not production-ready.
 
-Current version: `3.0.1` (configured in `build.gradle.kts` and `gradle/libs.versions.toml`).
+Current version: `3.0.2` (configured in `build.gradle.kts` and `gradle/libs.versions.toml`).
 
 ## Build & Run Commands
 

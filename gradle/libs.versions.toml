@@ -1,6 +1,6 @@
 [versions]
 # velocloud-version
-velocloud = "3.0.1"
+velocloud = "3.0.2"
 # external proto/shared artifacts – versioned independently, do not auto-bump
 velocloud-api = "3.0.0"
 
