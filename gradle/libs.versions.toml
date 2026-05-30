@@ -1,6 +1,6 @@
 [versions]
 # velocloud-version
-velocloud = "3.0.1"
+velocloud = "3.0.5"
 
 # libraries
 gson = "2.13.2"
