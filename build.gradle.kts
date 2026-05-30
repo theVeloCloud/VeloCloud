@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "de.snenjih.velocloud"
-    version = "3.0.0"
+    version = "3.0.1"
 
     repositories {
         mavenLocal()
