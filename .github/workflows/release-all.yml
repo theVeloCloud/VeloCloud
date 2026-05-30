@@ -1,0 +1,173 @@
+name: Release All Repos
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (z.B. 3.0.3 für Release, 3.0.3-SNAPSHOT für Entwicklung)'
+        required: true
+        type: string
+
+jobs:
+  release-all:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Validate version
+        run: |
+          V="${{ inputs.version }}"
+          if [[ -z "$V" ]]; then echo "Error: version required" && exit 1; fi
+          echo "VERSION=$V" >> $GITHUB_ENV
+          if [[ "$V" == *"-SNAPSHOT" ]]; then
+            echo "IS_SNAPSHOT=true" >> $GITHUB_ENV
+            echo "Modus: SNAPSHOT"
+          else
+            echo "IS_SNAPSHOT=false" >> $GITHUB_ENV
+            echo "Modus: RELEASE"
+          fi
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "VeloCloud Release Bot"
+          git config --global user.email "noreply@github.com"
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-all-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-gradle-all-
+
+      # --- Alle Repos auschecken ---
+
+      - uses: actions/checkout@v4
+        with:
+          repository: theVeloCloud/velocloud-proto
+          token: ${{ secrets.GH_PAT }}
+          path: velocloud-proto
+
+      - uses: actions/checkout@v4
+        with:
+          repository: theVeloCloud/velocloud-shared
+          token: ${{ secrets.GH_PAT }}
+          path: velocloud-shared
+
+      - uses: actions/checkout@v4
+        with:
+          repository: theVeloCloud/velocloud-sdk-java
+          token: ${{ secrets.GH_PAT }}
+          path: velocloud-sdk-java
+
+      - uses: actions/checkout@v4
+        with:
+          repository: theVeloCloud/velocloud-bridges
+          token: ${{ secrets.GH_PAT }}
+          path: velocloud-bridges
+
+      - uses: actions/checkout@v4
+        with:
+          repository: theVeloCloud/VeloCloud
+          token: ${{ secrets.GH_PAT }}
+          path: velocloud-main
+          ref: main
+          fetch-depth: 0
+
+      # --- Versionen in allen Repos setzen ---
+
+      - name: Bump all versions
+        run: |
+          V="${{ env.VERSION }}"
+
+          # proto, shared, sdk-java: top-level "version = ..."
+          sed -i "s/^version = \"[^\"]*\"/version = \"$V\"/" velocloud-proto/build.gradle.kts
+          sed -i "s/^version = \"[^\"]*\"/version = \"$V\"/" velocloud-shared/build.gradle.kts
+          sed -i "s/^version = \"[^\"]*\"/version = \"$V\"/" velocloud-sdk-java/build.gradle.kts
+
+          # bridges: "    version = ..." (mit 4 Leerzeichen, liegt in allprojects-Block)
+          sed -i "s/^    version = \"[^\"]*\"/    version = \"$V\"/" velocloud-bridges/build.gradle.kts
+
+          # VeloCloud main: build.gradle.kts + libs.versions.toml + CLAUDE.md
+          sed -i "s/^version = \"[^\"]*\"/version = \"$V\"/" velocloud-main/build.gradle.kts
+          sed -i "s/^velocloud = \"[^\"]*\"/velocloud = \"$V\"/" velocloud-main/gradle/libs.versions.toml
+          sed -i "s/Current version: \`[^\`]*\`/Current version: \`$V\`/" velocloud-main/CLAUDE.md
+
+          echo "Alle Versionen auf $V gesetzt"
+
+      # --- Publish in Abhängigkeitsreihenfolge ---
+      # proto muss zuerst, da shared davon abhängt; sdk-java braucht beide.
+
+      - name: Publish proto
+        run: |
+          cd velocloud-proto
+          chmod +x gradlew
+          ./gradlew publish
+        env:
+          REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
+          REPOSILITE_SECRET: ${{ secrets.REPOSILITE_SECRET }}
+
+      - name: Publish shared
+        run: |
+          cd velocloud-shared
+          chmod +x gradlew
+          ./gradlew publish
+        env:
+          REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
+          REPOSILITE_SECRET: ${{ secrets.REPOSILITE_SECRET }}
+
+      - name: Publish sdk-java
+        run: |
+          cd velocloud-sdk-java
+          chmod +x gradlew
+          ./gradlew publish
+        env:
+          REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
+          REPOSILITE_SECRET: ${{ secrets.REPOSILITE_SECRET }}
+
+      # --- Commit + Push (ohne Tag — Tags kommen danach für Releases) ---
+
+      - name: Commit and push all repos
+        run: |
+          V="${{ env.VERSION }}"
+
+          for dir in velocloud-proto velocloud-shared velocloud-sdk-java velocloud-bridges; do
+            cd "$dir"
+            git add build.gradle.kts
+            git diff --cached --quiet || git commit -m "chore: bump version to $V"
+            git push
+            cd ..
+          done
+
+          cd velocloud-main
+          git add build.gradle.kts gradle/libs.versions.toml CLAUDE.md
+          git diff --cached --quiet || git commit -m "chore: bump version to $V"
+          git push
+          cd ..
+
+      # --- Nur bei Release: Tags pushen → startet release.yml in bridges + VeloCloud ---
+
+      - name: Tag and push (Release only)
+        if: env.IS_SNAPSHOT == 'false'
+        run: |
+          V="${{ env.VERSION }}"
+
+          cd velocloud-bridges
+          git tag "v$V"
+          git push origin "v$V"
+          cd ..
+
+          cd velocloud-main
+          git tag "v$V"
+          git push origin "v$V"
+          cd ..
+
+          echo "Tags v$V gepusht — Release Workflows starten automatisch:"
+          echo "  → velocloud-bridges: Bridge JARs werden gebaut + released"
+          echo "  → VeloCloud: Launcher JAR wird gebaut + released"
