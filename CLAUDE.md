@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**PoloCloud v3** is a modular Minecraft cloud system for orchestrating server instances (Paper, Velocity, etc.) across Local, Docker, and Kubernetes runtimes. It is an early-stage prototype, not production-ready.
+**VeloCloud v3** is a modular Minecraft cloud system for orchestrating server instances (Paper, Velocity, etc.) across Local, Docker, and Kubernetes runtimes. It is an early-stage prototype, not production-ready.
 
-Current version: `3.0.0-pre.8-SNAPSHOT` (configured in `build.gradle.kts` and `gradle/libs.versions.toml`).
+Current version: `3.0.0` (configured in `build.gradle.kts` and `gradle/libs.versions.toml`).
 
 ## Build & Run Commands
 
@@ -26,15 +26,15 @@ All modules require **Java 21** (JVM toolchain enforced via Gradle).
 ./gradlew :platforms:test
 
 # Run a single test
-./gradlew :platforms:test --tests "dev.httpmarco.polocloud.platforms.PlatformTest.loadPool"
+./gradlew :platforms:test --tests "de.snenjih.velocloud.platforms.PlatformTest.loadPool"
 
 # Build Docker image (native architecture)
 ./gradlew :launcher:dockerBuild
 # Or directly:
-docker build -t polocloud:development -f docker/Dockerfile .
+docker build -t velocloud:development -f docker/Dockerfile .
 ```
 
-The launcher output is `launcher/build/libs/polocloud-launcher.jar`.
+The launcher output is `launcher/build/libs/velocloud-launcher.jar`.
 
 ## Module Architecture
 
@@ -48,7 +48,7 @@ platforms  → platform/version definitions for Minecraft server software (Kotli
 updater    → GitHub release version checker (Kotlin)
 ```
 
-**Dependency graph:** `launcher` bundles `agent + common + platforms + updater`. The `agent` depends on all others plus two external artifacts: `dev.httpmarco.polocloud:proto` and `dev.httpmarco.polocloud:shared` (gRPC stubs and shared interfaces, fetched from Maven Central snapshots).
+**Dependency graph:** `launcher` bundles `agent + common + platforms + updater`. The `agent` depends on all others plus two external artifacts: `de.snenjih.velocloud:proto` and `de.snenjih.velocloud:shared` (gRPC stubs and shared interfaces, fetched from Maven Central snapshots).
 
 ### Launcher (`launcher/`)
 
@@ -58,7 +58,7 @@ Pure Java module. Downloads runtime dependencies listed in `src/main/resources/d
 
 The core. Entry point: `AgentBoot.kt` → `main()` → initializes logging → instantiates the `Agent` singleton object.
 
-`Agent` extends `PolocloudShared` (from the external `shared` artifact) and wires together:
+`Agent` extends `VelocloudShared` (from the external `shared` artifact) and wires together:
 - **`Runtime`** — selected automatically at startup: Kubernetes > Docker > Local (fallback). Each runtime implements group storage, service storage, factory, expender, template storage, and config holder.
 - **`GrpcServerEndpoint`** — starts a gRPC server (default port `8932`) exposing services for events, groups, services, players, platform info, templates, and cloud information.
 - **`ModuleProvider`** — loads external module JARs at runtime.
@@ -94,7 +94,7 @@ Checks GitHub releases against the current version to determine if an update is 
 
 ## i18n
 
-All agent-facing messages go through `i18n` (an `I18nPolocloudAgent` instance). Translation files live in `agent/src/main/resources/i18n/polocloud-agent_<locale>.properties`. Translations are managed on Crowdin.
+All agent-facing messages go through `i18n` (an `I18nVelocloudAgent` instance). Translation files live in `agent/src/main/resources/i18n/velocloud-agent_<locale>.properties`. Translations are managed on Crowdin.
 
 ## Publishing
 
