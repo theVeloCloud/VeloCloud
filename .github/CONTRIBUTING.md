@@ -1,6 +1,6 @@
-# Contributing to PoloCloud
+# Contributing to VeloCloud
 
-Thanks for your interest in improving PoloCloud!  
+Thanks for your interest in improving VeloCloud!  
 Please follow these quick guidelines:
 
 ## Reporting Bugs
@@ -18,4 +18,4 @@ Please follow these quick guidelines:
 4. Describe your changes clearly in the PR.
 5. **Always select the `development` branch** unless explicitly asked by a maintainer to target another branch.
 
-By contributing, you agree your work will be licensed under the PoloCloud license.
+By contributing, you agree your work will be licensed under the VeloCloud license.

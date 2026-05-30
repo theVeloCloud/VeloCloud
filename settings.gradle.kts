@@ -11,7 +11,7 @@ plugins {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "polocloudv3"
+rootProject.name = "velocloudv3"
 include("agent")
 include("platforms")
 include("launcher")

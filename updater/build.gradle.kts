@@ -10,11 +10,11 @@ dependencies {
 tasks.jar {
     manifest {
         attributes(
-            "Main-Class" to "dev.httpmarco.polocloud.updater.UpdaterRuntime",
-            "POLOCLOUD_VERSION" to version
+            "Main-Class" to "de.snenjih.velocloud.updater.UpdaterRuntime",
+            "VELOCLOUD_VERSION" to version
         )
     }
-    archiveFileName.set("polocloud-updater-$version.jar")
+    archiveFileName.set("velocloud-updater-$version.jar")
 }
 
 kotlin {

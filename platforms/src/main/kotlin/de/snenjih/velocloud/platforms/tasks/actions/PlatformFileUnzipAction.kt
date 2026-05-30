@@ -1,0 +1,45 @@
+package de.snenjih.velocloud.platforms.tasks.actions
+
+import de.snenjih.velocloud.platforms.PlatformParameters
+import de.snenjih.velocloud.platforms.tasks.PlatformTaskStep
+import java.nio.file.Path
+import java.util.zip.ZipFile
+import kotlin.io.path.createDirectory
+import kotlin.io.path.createParentDirectories
+import kotlin.io.path.notExists
+import kotlin.io.path.outputStream
+
+class PlatformFileUnzipAction : PlatformAction() {
+    override fun run(
+        file: Path,
+        step: PlatformTaskStep,
+        environment: PlatformParameters
+    ) {
+        if (file.notExists()) {
+            return
+        }
+
+        ZipFile(file.toFile()).use { zip ->
+            zip.entries().asSequence().forEach { entry ->
+                val newFile = file.parent.resolve(entry.name)
+                try {
+                    newFile.createParentDirectories()
+                } catch (ex: Exception) {
+                    println(ex.message)
+                }
+                if (entry.isDirectory) {
+                    if (newFile.notExists()) {
+                        newFile.createDirectory()
+                    }
+                } else {
+
+                    zip.getInputStream(entry).use { input ->
+                        newFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

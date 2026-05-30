@@ -31,11 +31,11 @@ tasks.jar {
 
     manifest {
         attributes(
-            "Main-Class" to "dev.httpmarco.polocloud.launcher.PolocloudLauncher",
-            "POLOCLOUD_VERSION" to version
+            "Main-Class" to "de.snenjih.velocloud.launcher.VelocloudLauncher",
+            "VELOCLOUD_VERSION" to version
         )
     }
-    archiveFileName.set("polocloud-launcher.jar")
+    archiveFileName.set("velocloud-launcher.jar")
 }
 
 /**
@@ -76,7 +76,7 @@ tasks.register("buildDependencies") {
 
                     var url = "$mavenCentralBase/$groupPath/$name/$version/$fileName"
 
-                    if (group == "dev.httpmarco.polocloud") {
+                    if (group == "de.snenjih.velocloud") {
                         if (name == "proto" || name == "shared") {
                             val fileUrl = getLatestSnapshotFile(
                                 baseUrl = mavenCentralSnapshot,
@@ -165,14 +165,14 @@ fun getLatestSnapshotFile(
 
 
 tasks.register<Exec>("dockerBuild") {
-    val imageName = "polocloud:development"
+    val imageName = "velocloud:development"
 
     workingDir = rootProject.projectDir
 
     // Docker build
     commandLine(
         "docker", "build",
-        "--build-arg", "POLOCLOUD_VERSION=$version",
+        "--build-arg", "VELOCLOUD_VERSION=$version",
         "-t", imageName,
         "-f", "docker/Dockerfile",
         "."

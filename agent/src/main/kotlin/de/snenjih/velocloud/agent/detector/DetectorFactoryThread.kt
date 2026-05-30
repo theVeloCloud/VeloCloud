@@ -1,0 +1,34 @@
+package de.snenjih.velocloud.agent.detector
+
+import de.snenjih.velocloud.agent.logger
+
+class DetectorFactoryThread(detector: Detector) {
+
+    private val thread = Thread {
+        while (true) {
+            try {
+                detector.tick()
+                Thread.sleep(detector.cycleLife())
+            } catch (_: InterruptedException) {
+                Thread.currentThread().interrupt()
+                break
+            } catch (e: Exception) {
+                logger.error(e)
+            }
+        }
+    }
+
+    companion object {
+        fun bindDetector(detector: Detector) :DetectorFactoryThread {
+            return DetectorFactoryThread(detector)
+        }
+    }
+
+    fun detect() {
+        thread.start()
+    }
+
+    fun close(){
+        thread.interrupt()
+    }
+}

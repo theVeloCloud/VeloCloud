@@ -6,7 +6,7 @@ dependencies {
     implementation("com.google.guava:guava:33.5.0-jre")
     testImplementation(kotlin("test"))
     api(libs.gson)
-    compileOnly(libs.polocloud.proto)
+    compileOnly(libs.velocloud.proto)
     compileOnly(libs.log4j.api)
 }
 
@@ -19,7 +19,7 @@ kotlin {
 }
 
 tasks.jar {
-    archiveFileName.set("polocloud-common-$version.jar")
+    archiveFileName.set("velocloud-common-$version.jar")
 }
 
 
@@ -29,8 +29,8 @@ publishing {
             artifact(tasks.jar.get())
 
             pom {
-                description.set("PoloCloud gRPC API with bundled dependencies")
-                url.set("https://github.com/thePolocloud/polocloud")
+                description.set("VeloCloud gRPC API with bundled dependencies")
+                url.set("https://github.com/theVeloCloud/velocloud")
 
                 licenses {
                     license {
@@ -45,9 +45,9 @@ publishing {
                     }
                 }
                 scm {
-                    url.set("https://github.com/thePolocloud/polocloud")
-                    connection.set("scm:git:https://github.com/thePolocloud/polocloud.git")
-                    developerConnection.set("scm:git:https://github.com/thePolocloud/polocloud.git")
+                    url.set("https://github.com/theVeloCloud/velocloud")
+                    connection.set("scm:git:https://github.com/theVeloCloud/velocloud.git")
+                    developerConnection.set("scm:git:https://github.com/theVeloCloud/velocloud.git")
                 }
             }
         }

@@ -22,17 +22,17 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /cloud
 
-ARG POLOCLOUD_VERSION=dev
-ENV POLOCLOUD_VERSION=$POLOCLOUD_VERSION
+ARG VELOCLOUD_VERSION=dev
+ENV VELOCLOUD_VERSION=$VELOCLOUD_VERSION
 
 # Default to talking to a mounted Docker socket; can be overridden at runtime.
 ENV DOCKER_HOST=unix:///var/run/docker.sock
 
-COPY --from=build /workspace/launcher/build/libs/polocloud-launcher.jar /cloud/polocloud-launcher.jar
+COPY --from=build /workspace/launcher/build/libs/velocloud-launcher.jar /cloud/velocloud-launcher.jar
 
 # Stop-Signal explizit setzen
 STOPSIGNAL SIGTERM
 
 EXPOSE 8932
 
-ENTRYPOINT ["java", "-jar", "/cloud/polocloud-launcher.jar"]
+ENTRYPOINT ["java", "-jar", "/cloud/velocloud-launcher.jar"]

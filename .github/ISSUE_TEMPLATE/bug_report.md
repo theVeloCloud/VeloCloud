@@ -22,7 +22,7 @@ If applicable, add screenshots to help explain your problem.
 **System (please complete the following information):**
  - OS
  - Java Version
- - PoloCloud Version
+ - VeloCloud Version
  - Service information
  - Addons with Version
 

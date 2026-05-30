@@ -5,12 +5,12 @@ plugins {
 dependencies {
     testImplementation(kotlin("test"))
     testImplementation(projects.common)
-    testImplementation(libs.polocloud.proto)
+    testImplementation(libs.velocloud.proto)
 
     compileOnly(libs.bundles.confirationPool)
 
     compileOnly(libs.log4j.api)
-    compileOnly(libs.polocloud.proto)
+    compileOnly(libs.velocloud.proto)
     compileOnly(project(":common"))
 }
 
@@ -34,5 +34,5 @@ kotlin {
 }
 
 tasks.jar {
-    archiveFileName.set("polocloud-platforms-$version.jar")
+    archiveFileName.set("velocloud-platforms-$version.jar")
 }

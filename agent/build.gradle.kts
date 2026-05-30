@@ -5,8 +5,8 @@ plugins {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation(libs.polocloud.proto)
-    implementation(libs.polocloud.shared)
+    implementation(libs.velocloud.proto)
+    implementation(libs.velocloud.shared)
 
     implementation(libs.bundles.terminal)
     kapt(libs.bundles.terminal)
@@ -27,9 +27,9 @@ dependencies {
 }
 
 tasks.jar {
-    archiveFileName.set("polocloud-agent-$version.jar")
+    archiveFileName.set("velocloud-agent-$version.jar")
     manifest {
-        attributes("Main-Class" to "dev.httpmarco.polocloud.agent.AgentBootKt")
+        attributes("Main-Class" to "de.snenjih.velocloud.agent.AgentBootKt")
     }
 }
 
@@ -47,8 +47,8 @@ publishing {
             artifact(tasks.jar.get())
 
             pom {
-                description.set("PoloCloud gRPC API with bundled dependencies")
-                url.set("https://github.com/thePolocloud/polocloud")
+                description.set("VeloCloud gRPC API with bundled dependencies")
+                url.set("https://github.com/theVeloCloud/velocloud")
 
                 licenses {
                     license {
@@ -63,9 +63,9 @@ publishing {
                     }
                 }
                 scm {
-                    url.set("https://github.com/thePolocloud/polocloud")
-                    connection.set("scm:git:https://github.com/thePolocloud/polocloud.git")
-                    developerConnection.set("scm:git:https://github.com/thePolocloud/polocloud.git")
+                    url.set("https://github.com/theVeloCloud/velocloud")
+                    connection.set("scm:git:https://github.com/theVeloCloud/velocloud.git")
+                    developerConnection.set("scm:git:https://github.com/theVeloCloud/velocloud.git")
                 }
             }
         }
