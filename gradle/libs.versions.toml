@@ -1,6 +1,8 @@
 [versions]
 # velocloud-version
 velocloud = "3.0.1"
+# external proto/shared artifacts – versioned independently, do not auto-bump
+velocloud-api = "3.0.0"
 
 # libraries
 gson = "2.13.2"
@@ -34,8 +36,8 @@ lombok = "1.18.42"
 
 [libraries]
 
-velocloud-proto =  { group = "de.snenjih.velocloud", name = "proto", version.ref = "velocloud" }
-velocloud-shared =  { group = "de.snenjih.velocloud", name = "shared", version.ref = "velocloud" }
+velocloud-proto =  { group = "de.snenjih.velocloud", name = "proto", version.ref = "velocloud-api" }
+velocloud-shared =  { group = "de.snenjih.velocloud", name = "shared", version.ref = "velocloud-api" }
 
 # libraries
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
