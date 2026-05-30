@@ -60,7 +60,8 @@ tasks.register("buildDependencies") {
     doLast {
         val agentProject = project(":agent")
         val mavenCentralBase = "https://repo1.maven.org/maven2"
-        val mavenCentralSnapshot = "https://central.sonatype.com/repository/maven-snapshots"
+        val reposiliteSnapshots = "https://repo.snenjih.de/snapshots"
+        val reposiliteReleases = "https://repo.snenjih.de/releases"
         val runtimeClasspath = agentProject.configurations.getByName("runtimeClasspath")
 
         val outputFile = file("src/main/resources/dependencies.blob")
@@ -78,15 +79,17 @@ tasks.register("buildDependencies") {
 
                     if (group == "de.snenjih.velocloud") {
                         if (name == "proto" || name == "shared") {
-                            val fileUrl = getLatestSnapshotFile(
-                                baseUrl = mavenCentralSnapshot,
-                                group = group,
-                                name = name,
-                                version = version,
-                                extension = "jar"
-                            )
-
-                            url = fileUrl
+                            url = if (version.endsWith("-SNAPSHOT")) {
+                                getLatestSnapshotFile(
+                                    baseUrl = reposiliteSnapshots,
+                                    group = group,
+                                    name = name,
+                                    version = version,
+                                    extension = "jar"
+                                )
+                            } else {
+                                "$reposiliteReleases/$groupPath/$name/$version/$fileName"
+                            }
                         } else {
                             return@forEach
                         }
