@@ -22,6 +22,9 @@ dependencies {
     implementation(projects.common)
     implementation(projects.updater)
 
+    implementation(libs.hikari)
+    implementation(libs.mysql)
+
     // todo versions -> toml
     implementation("io.grpc:grpc-netty:1.78.0")
 }

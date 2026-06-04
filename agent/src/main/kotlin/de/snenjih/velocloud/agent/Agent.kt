@@ -1,6 +1,7 @@
 package de.snenjih.velocloud.agent
 
 import de.snenjih.velocloud.agent.configuration.AgentConfig
+import de.snenjih.velocloud.agent.database.DatabaseManager
 import de.snenjih.velocloud.agent.detector.DetectorFactoryThread
 import de.snenjih.velocloud.agent.detector.OnlineStateDetector
 import de.snenjih.velocloud.agent.events.EventService
@@ -48,6 +49,12 @@ object Agent : VelocloudShared(true) {
     val cloudInformationStorage = CloudInformationStorageImpl()
     val platformStorage = PlatformStorageImpl()
 
+    lateinit var databaseManager: DatabaseManager
+        private set
+
+    val isDatabaseConfigured: Boolean
+        get() = ::config.isInitialized && config.database != null
+
     init {
         // display the default log information
         i18n.info("agent.starting", velocloudVersion())
@@ -74,6 +81,10 @@ object Agent : VelocloudShared(true) {
         // read all information about the runtime config
         // this is done before the runtime is initialized
         this.config = this.runtime.configHolder().read("config", AgentConfig())
+
+        if (config.database != null) {
+            this.databaseManager = DatabaseManager(config.database!!)
+        }
 
         if (config.autoUpdate && Updater.newVersionAvailable()) {
 
@@ -111,6 +122,9 @@ object Agent : VelocloudShared(true) {
      * and close the online state detector.
      */
     fun close() {
+        if (isDatabaseConfigured && ::databaseManager.isInitialized) {
+            this.databaseManager.close()
+        }
         this.runtime.shutdown()
         this.grpcServerEndpoint.close()
         this.onlineStateDetector.close()

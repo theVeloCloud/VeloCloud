@@ -1,6 +1,8 @@
 [versions]
 # velocloud-version
-velocloud = "3.0.6"
+velocloud = "3.0.7"
+hikari = "5.1.0"
+mysql = "9.3.0"
 
 # libraries
 gson = "2.13.2"
@@ -36,6 +38,9 @@ lombok = "1.18.42"
 
 velocloud-proto =  { group = "de.snenjih.velocloud", name = "proto", version.ref = "velocloud" }
 velocloud-shared =  { group = "de.snenjih.velocloud", name = "shared", version.ref = "velocloud" }
+
+hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
+mysql  = { group = "com.mysql",  name = "mysql-connector-j", version.ref = "mysql" }
 
 # libraries
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }

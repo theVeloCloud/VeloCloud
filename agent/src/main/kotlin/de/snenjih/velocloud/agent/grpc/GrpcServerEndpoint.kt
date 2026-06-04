@@ -1,5 +1,6 @@
 package de.snenjih.velocloud.agent.grpc
 
+import de.snenjih.velocloud.agent.database.DatabaseConfigGrpcService
 import de.snenjih.velocloud.agent.events.EventGrpcService
 import de.snenjih.velocloud.agent.groups.GroupGrpcService
 import de.snenjih.velocloud.agent.i18n
@@ -24,6 +25,7 @@ class GrpcServerEndpoint {
             .addService(CloudInformationGrpcService())
             .addService(PlatformGrpcService())
             .addService(TemplateGrpcService())
+            .addService(DatabaseConfigGrpcService())
             .build()
         this.server.start()
         i18n.info("agent.starting.grpc.successful", port)
