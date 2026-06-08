@@ -2,9 +2,9 @@
 
 # ☁️ VeloCloud v3
 
-[![License](https://img.shields.io/github/license/HttpMarco/velocloud?style=for-the-badge&color=b2204c)](../LICENSE)
+[![License](https://img.shields.io/github/license/Snenjih/velocloud?style=for-the-badge&color=b2204c)](../LICENSE)
 [![Modrinth](https://img.shields.io/badge/Modrinth-velocloud-1bd96a?logo=modrinth&style=for-the-badge)](https://modrinth.com/organization/velocloud)
-[![Downloads](https://img.shields.io/github/downloads/HttpMarco/Velocloud/total?style=for-the-badge&logo=github&color=2ea043)](https://github.com/theVeloCloud/velocloud/releases)
+[![Downloads](https://img.shields.io/github/downloads/theVeloCloud/Velocloud/total?style=for-the-badge&logo=github&color=2ea043)](https://github.com/theVeloCloud/velocloud/releases)
 
 [![Crowdin](https://badges.crowdin.net/velocloud/localized.svg)](https://crowdin.com/project/velocloud)
 
